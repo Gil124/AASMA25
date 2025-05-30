@@ -372,7 +372,7 @@ def play_batch(
     table.add_column("AVG ROAD", justify="right")
     table.add_column("AVG ARMY", justify="right")
     table.add_column("AVG DEV VP", justify="right")
-    table.add_column("AVG DEC TIME (s)", justify="right")
+    table.add_column("AVG DEC TIME (ms)", justify="right")
 
     for player in players:
         vps = statistics_accumulator.results_by_player[player.color]

@@ -69,8 +69,9 @@ class AlphaBetaPlayer(Player):
             game.copy(), self.depth, float("-inf"), float("inf"), deadline, node
         )
 
-        elapsed = time.time() - start
-        self.decision_times.append(elapsed)  # <-- Add this line
+        elapsed = (time.time() - start) * 1000 
+        self.decision_times.append(elapsed)  
+        
 
         if result[0] is None:
             return playable_actions[0]

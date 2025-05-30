@@ -1,18 +1,14 @@
-import random
-from pprint import pprint
 from catanatron.cli.play import play_batch
 
-from catanatron.game import Game
-from catanatron.models.player import Player, RandomPlayer, Color
-from catanatron.players.weighted_random import WeightedRandomPlayer
+from catanatron.models.player import Color
 from catanatron.players.minimax import AlphaBetaPlayer
-from catanatron.players.search import VictoryPointPlayer
-from catanatron.players.mcts import MCTSPlayer
-from catanatron.players.playouts import GreedyPlayoutsPlayer
+from catanatron.players.weighted_random import WeightedRandomPlayer
 
 players = [
     AlphaBetaPlayer(Color.RED, prunning=True),
     AlphaBetaPlayer(Color.WHITE, prunning=False),
+    WeightedRandomPlayer(Color.BLUE),
+    WeightedRandomPlayer(Color.ORANGE),
 ]
 
-wins, results_by_player, games = play_batch(100, players)
+wins, results_by_player, games = play_batch(10, players)
