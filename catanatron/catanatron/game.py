@@ -196,4 +196,5 @@ class Game:
         game_copy.id = self.id
         game_copy.vps_to_win = self.vps_to_win
         game_copy.state = self.state.copy()
+        
         return game_copy

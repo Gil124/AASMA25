@@ -372,6 +372,8 @@ def play_batch(
     table.add_column("AVG ROAD", justify="right")
     table.add_column("AVG ARMY", justify="right")
     table.add_column("AVG DEV VP", justify="right")
+    table.add_column("AVG DEC TIME (ms)", justify="right")
+
     for player in players:
         vps = statistics_accumulator.results_by_player[player.color]
         avg_vps = sum(vps) / len(vps)
@@ -380,6 +382,7 @@ def play_batch(
         avg_largest = vp_accumulator.get_avg_largest(player.color)
         avg_longest = vp_accumulator.get_avg_longest(player.color)
         avg_devvps = vp_accumulator.get_avg_devvps(player.color)
+        avg_time = getattr(player, "average_decision_time", lambda: 0.0)()
         table.add_row(
             rich_player_name(player),
             str(statistics_accumulator.wins[player.color]),
@@ -389,6 +392,7 @@ def play_batch(
             f"{avg_longest:.2f}",
             f"{avg_largest:.2f}",
             f"{avg_devvps:.2f}",
+            f"{avg_time:.3f}",
         )
     console.print(table)
 

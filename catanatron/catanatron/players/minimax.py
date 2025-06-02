@@ -43,6 +43,7 @@ class AlphaBetaPlayer(Player):
         self.params = params
         self.use_value_function = None
         self.epsilon = epsilon
+        self.decision_times = []
 
     def value_function(self, game, p0_color):
         raise NotImplementedError
@@ -62,18 +63,24 @@ class AlphaBetaPlayer(Player):
 
         start = time.time()
         state_id = str(len(game.state.actions))
-        node = DebugStateNode(state_id, self.color)  # i think it comes from outside
+        node = DebugStateNode(state_id, self.color)
         deadline = start + MAX_SEARCH_TIME_SECS
         result = self.alphabeta(
             game.copy(), self.depth, float("-inf"), float("inf"), deadline, node
         )
-        # print("Decision Results:", self.depth, len(actions), time.time() - start)
-        # if game.state.num_turns > 10:
-        #     render_debug_tree(node)
-        #     breakpoint()
+
+        elapsed = (time.time() - start) * 1000 
+        self.decision_times.append(elapsed)  
+        
+
         if result[0] is None:
             return playable_actions[0]
         return result[0]
+    
+    def average_decision_time(self):
+        if not self.decision_times:
+            return 0.0
+        return sum(self.decision_times) / len(self.decision_times)
 
     def __repr__(self) -> str:
         return (
