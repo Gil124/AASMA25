@@ -154,6 +154,41 @@ def list_prunned_actions(game):
 
     return list(actions)
 
+def list_prunned_actions_improved(game):
+    current_color = game.state.current_color()
+    playable_actions = game.state.playable_actions
+    actions = playable_actions.copy()
+    types = set(map(lambda a: a.action_type, playable_actions))
+
+    # Prune Initial Settlements at 1-tile places
+    if ActionType.BUILD_SETTLEMENT in types and game.state.is_initial_build_phase:
+        actions = filter(
+            lambda a: len(game.state.board.map.adjacent_tiles[a.value]) != 1, actions
+        )
+
+    # Prune Trading if can hold for resources. Only for rare resources.
+    if ActionType.MARITIME_TRADE in types:
+        port_resources = game.state.board.get_player_port_resources(current_color)
+        has_three_to_one = None in port_resources
+        # TODO: if can_safely_hold, prune all
+        tmp_actions = []
+        for action in actions:
+            if action.action_type != ActionType.MARITIME_TRADE:
+                tmp_actions.append(action)
+                continue
+            if has_three_to_one and action.value[3] is not None:
+                continue
+            # DONE
+            if action.value[1] is not None and action.value[1] in port_resources and action.value[2] is None:
+                tmp_actions.append(action)
+                continue
+            tmp_actions.append(action)
+        actions = tmp_actions
+
+    if ActionType.MOVE_ROBBER in types:
+        actions = prune_robber_actions(current_color, game, actions)
+
+    return list(actions)
 
 def prune_robber_actions(current_color, game, actions):
     """Eliminate all but the most impactful tile"""

@@ -6,9 +6,7 @@ from catanatron.players.weighted_random import WeightedRandomPlayer
 
 players = [
     AlphaBetaPlayer(Color.RED, prunning=True),
-    AlphaBetaPlayer(Color.WHITE, prunning=False),
-    WeightedRandomPlayer(Color.BLUE),
-    WeightedRandomPlayer(Color.ORANGE),
+    AlphaBetaPlayer(Color.WHITE, prunning_improved=True),
 ]
 
-wins, results_by_player, games = play_batch(10, players)
+wins, results_by_player, games = play_batch(20, players)
