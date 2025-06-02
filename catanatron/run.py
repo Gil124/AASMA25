@@ -25,7 +25,6 @@ players = [
 ]
 game = Game(players)
 
-from pprint import pprint
 from catanatron.cli.play import play_batch
 
 wins, results_by_player, games = play_batch(100, players)
