@@ -18,6 +18,7 @@ class MCTSPlayer(Player):
         super().__init__(color)
         self.num_simulations = int(num_simulations)
         self.prunning = bool(prunning)
+        self.decision_times = []
 
     def decide(self, game: Game, playable_actions):
         actions = list_prunned_actions(game) if self.prunning else playable_actions
@@ -28,11 +29,14 @@ class MCTSPlayer(Player):
         root = StateNode(self.color, game.copy(), None, self.prunning)
         for _ in range(self.num_simulations):
             root.run_simulation()
-
-        # print(
-        #     f"{str(self)} took {time.time() - start} secs to decide {len(playable_actions)}"
-        # )
+        elapsed = (time.time() - start) * 1000
+        self.decision_times.append(elapsed)
         return root.choose_best_action()
+
+    def average_decision_time(self):
+        if not self.decision_times:
+            return 0.0
+        return sum(self.decision_times) / len(self.decision_times)
 
     def __repr__(self):
         return super().__repr__() + f"({self.num_simulations}:{self.prunning})"

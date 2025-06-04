@@ -20,11 +20,13 @@ class FirstPlayer(Player):
         return random.choice(playable_actions)
     
 players = [
-    AlphaBetaPlayer(Color.RED, prunning=True),
+    MCTSPlayer(Color.RED, num_simulations=20),
     WeightedRandomPlayer(Color.BLUE),
 ]
 game = Game(players)
 
 from catanatron.cli.play import play_batch
 
-wins, results_by_player, games = play_batch(100, players)
+if __name__ == "__main__":
+    # your main logic here, e.g.
+    wins, results_by_player, games = play_batch(25, players)

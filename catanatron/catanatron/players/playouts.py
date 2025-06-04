@@ -24,13 +24,13 @@ class GreedyPlayoutsPlayer(Player):
     def __init__(self, color, num_playouts=DEFAULT_NUM_PLAYOUTS):
         super().__init__(color)
         self.num_playouts = int(num_playouts)
+        self.decision_times = []
 
     def decide(self, game: Game, playable_actions):
         if len(playable_actions) == 1:
             return playable_actions[0]
 
         start = time.time()
-        # num_playouts = PLAYOUTS_BUDGET // len(playable_actions)
         num_playouts = self.num_playouts
 
         best_action = None
@@ -45,12 +45,14 @@ class GreedyPlayoutsPlayer(Player):
             if max_wins is None or wins > max_wins:
                 best_action = action
                 max_wins = wins
-
-        print(
-            f"Greedy took {time.time() - start} secs to decide "
-            + f"{len(playable_actions)} at {num_playouts} per action"
-        )
+        elapsed = (time.time() - start) * 1000
+        self.decision_times.append(elapsed)
         return best_action
+
+    def average_decision_time(self):
+        if not self.decision_times:
+            return 0.0
+        return sum(self.decision_times) / len(self.decision_times)
 
 
 def run_playouts(action_applied_game_copy, num_playouts):

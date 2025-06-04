@@ -1,4 +1,5 @@
 import random
+import time
 
 from catanatron.state_functions import (
     player_key,
@@ -14,10 +15,15 @@ class VictoryPointPlayer(Player):
     in this turn, selects from them at random.
     """
 
+    def __init__(self, color):
+        super().__init__(color)
+        self.decision_times = []
+
     def decide(self, game: Game, playable_actions):
         if len(playable_actions) == 1:
             return playable_actions[0]
 
+        start = time.time()
         best_value = float("-inf")
         best_actions = []
         for action in playable_actions:
@@ -31,5 +37,11 @@ class VictoryPointPlayer(Player):
             if value > best_value:
                 best_value = value
                 best_actions = [action]
-
+        elapsed = (time.time() - start) * 1000
+        self.decision_times.append(elapsed)
         return random.choice(best_actions)
+
+    def average_decision_time(self):
+        if not self.decision_times:
+            return 0.0
+        return sum(self.decision_times) / len(self.decision_times)
