@@ -1,0 +1,39 @@
+{
+  "dqn": {
+    "learning_rate": 0.0001,
+    "epsilon_start": 1.0,
+    "epsilon_end": 0.01,
+    "epsilon_decay": 0.995,
+    "batch_size": 64,
+    "memory_size": 100000,
+    "target_update": 100,
+    "hidden_size": 512,
+    "num_episodes": 10000,
+    "eval_interval": 100,
+    "save_interval": 500
+  },
+  "ppo": {
+    "learning_rate": 0.0003,
+    "batch_size": 64,
+    "ppo_epochs": 4,
+    "clip_param": 0.2,
+    "value_loss_coef": 0.5,
+    "entropy_coef": 0.01,
+    "max_grad_norm": 0.5,
+    "hidden_size": 512,
+    "num_episodes": 10000,
+    "eval_interval": 100,
+    "save_interval": 500
+  },
+  "training": {
+    "device": "cpu",
+    "log_interval": 10,
+    "render": false,
+    "seed": 42,
+    "max_episode_steps": 1000,
+    "output_dir": "training_outputs",
+    "models_dir": "models",
+    "logs_dir": "logs",
+    "tensorboard_dir": "tensorboard"
+  }
+}

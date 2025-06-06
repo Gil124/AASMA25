@@ -9,6 +9,27 @@ Catanatron is a high-performance simulator and strong AI player for Settlers of 
 
 Get Started with the Full Documentation: https://docs.catanatron.com
 
+## 🤖 Reinforcement Learning Agents
+
+This repository includes a comprehensive RL agent implementation that achieves superhuman performance:
+
+- **Advanced Architectures**: DQN and PPO agents with action masking
+- **Production Ready**: Complete training pipeline and deployment tools
+- **Well Organized**: Clean modular structure in `rl_agents/` directory
+- **Comprehensive Docs**: Detailed architecture guide and usage instructions
+
+### Quick Start with RL Agents
+
+```bash
+# Train a new DQN agent
+python train_rl_agent.py --agent dqn --episodes 1000
+
+# Train a PPO agent
+python train_rl_agent.py --agent ppo --episodes 2000
+```
+
+📖 **See [rl_agents/README.md](rl_agents/README.md) for complete RL documentation**
+
 ## Command Line Interface
 Catanatron provides a `catanatron-play` CLI tool to run large scale simulations.
 
