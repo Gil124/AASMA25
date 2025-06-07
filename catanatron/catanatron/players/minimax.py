@@ -4,7 +4,7 @@ from typing import Any
 
 from catanatron.game import Game
 from catanatron.models.player import Player
-from catanatron.players.tree_search_utils import expand_spectrum, list_prunned_actions
+from catanatron.players.tree_search_utils import expand_spectrum, list_prunned_actions, list_prunned_actions_improved
 from catanatron.players.value import (
     DEFAULT_WEIGHTS,
     get_value_fn,
@@ -30,6 +30,7 @@ class AlphaBetaPlayer(Player):
         color,
         depth=ALPHABETA_DEFAULT_DEPTH,
         prunning=False,
+        prunning_improved=False,
         value_fn_builder_name=None,
         params=DEFAULT_WEIGHTS,
         epsilon=None,
@@ -37,6 +38,7 @@ class AlphaBetaPlayer(Player):
         super().__init__(color)
         self.depth = int(depth)
         self.prunning = str(prunning).lower() != "false"
+        self.prunning_improved = str(prunning_improved).lower() != "false"
         self.value_fn_builder_name = (
             "contender_fn" if value_fn_builder_name == "C" else "base_fn"
         )
@@ -51,6 +53,8 @@ class AlphaBetaPlayer(Player):
     def get_actions(self, game):
         if self.prunning:
             return list_prunned_actions(game)
+        if self.prunning_improved:
+            return list_prunned_actions_improved(game)
         return game.state.playable_actions
 
     def decide(self, game: Game, playable_actions):
@@ -85,7 +89,7 @@ class AlphaBetaPlayer(Player):
     def __repr__(self) -> str:
         return (
             super().__repr__()
-            + f"(depth={self.depth},value_fn={self.value_fn_builder_name},prunning={self.prunning})"
+            + f"(depth={self.depth},value_fn={self.value_fn_builder_name},prunning={self.prunning},prunning_improved={self.prunning_improved})"
         )
 
     def alphabeta(self, game, depth, alpha, beta, deadline, node):
