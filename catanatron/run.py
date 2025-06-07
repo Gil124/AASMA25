@@ -27,6 +27,13 @@ game = Game(players)
 
 from catanatron.cli.play import play_batch
 
-if __name__ == "__main__":
-    # your main logic here, e.g.
-    wins, results_by_player, games = play_batch(25, players)
+from catanatron.models.player import Color
+from catanatron.players.minimax import AlphaBetaPlayer
+from catanatron.players.weighted_random import WeightedRandomPlayer
+
+players = [
+    AlphaBetaPlayer(Color.RED, prunning=True),
+    AlphaBetaPlayer(Color.WHITE, prunning_improved=True),
+]
+
+wins, results_by_player, games = play_batch(20, players)
