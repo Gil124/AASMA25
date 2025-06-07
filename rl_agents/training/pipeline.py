@@ -45,11 +45,11 @@ class CatanatronTrainer:
         self.log_dir = log_dir
         self.model_dir = model_dir
         self.device = device
-        
-        # Create directories
+          # Create directories
         os.makedirs(log_dir, exist_ok=True)
         os.makedirs(model_dir, exist_ok=True)
-          # Initialize components
+        
+        # Initialize components
         self.env = None
         self.agent = None
         self.buffer = None
@@ -59,18 +59,35 @@ class CatanatronTrainer:
         self.episode = 0
         self.total_steps = 0
         self.best_win_rate = 0.0
-        
+    
     def setup_environment(self, env_config: Dict[str, Any] = None):
-        """Setup the training environment"""
-        logger.info("Setting up Catanatron environment...")
+        """Setup the training environment with 2-player games and curriculum learning"""
+        logger.info("Setting up Catanatron 2-player environment with heuristic opponents...")
         
-        # Default environment configuration
-        # Note: Color.BLUE is reserved for the RL player (p0), so enemies use other colors
+        # Import heuristic players for training
+        from catanatron.players.minimax import AlphaBetaPlayer
+        from catanatron.players.weighted_random import WeightedRandomPlayer
+        from catanatron.players.mcts import MCTSPlayer
+        from catanatron.players.playouts import GreedyPlayoutsPlayer
+        
+        # Curriculum learning: start with easier opponents, progress to harder ones
+        training_phase = self.config.get("training_phase", "basic")
+        
+        if training_phase == "basic":
+            # Phase 1: Train against random and weighted random
+            opponent_class = RandomPlayer if self.episode < 1000 else WeightedRandomPlayer
+        elif training_phase == "intermediate":
+            # Phase 2: Train against greedy and basic MCTS
+            opponent_class = GreedyPlayoutsPlayer if self.episode < 2000 else MCTSPlayer
+        else:  # advanced
+            # Phase 3: Train against AlphaBeta (the champion)
+            opponent_class = AlphaBetaPlayer
+          # 2-player configuration (RL agent vs single opponent)
+        # RL agent is Color.BLUE (p0), opponent should be Color.RED
         default_config = {
             "enemies": [
-                RandomPlayer(Color.RED),
-                RandomPlayer(Color.ORANGE),
-                RandomPlayer(Color.WHITE)
+                opponent_class(Color.RED, prunning_improved=True) if opponent_class == AlphaBetaPlayer 
+                else opponent_class(Color.RED)
             ]
         }
         
@@ -78,7 +95,8 @@ class CatanatronTrainer:
             default_config.update(env_config)
         
         self.env = CatanatronRLEnvironmentWrapper(default_config)
-        logger.info(f"Environment created with obs_dim={self.env.obs_dim}, action_dim={self.env.action_dim}")
+        logger.info(f"2-player environment created with {opponent_class.__name__} opponent")
+        logger.info(f"obs_dim={self.env.obs_dim}, action_dim={self.env.action_dim}")
         
         return self.env.obs_dim, self.env.action_dim
     
@@ -346,8 +364,7 @@ class CatanatronTrainer:
         
         logger.info(f"Evaluation results: Win rate={win_rate:.3f}, "
                    f"Avg reward={avg_reward:.2f}, Avg length={avg_length:.1f}")
-        
-        # Save best model
+          # Save best model
         if win_rate > self.best_win_rate:
             self.best_win_rate = win_rate
             best_model_path = os.path.join(self.model_dir, f"best_{self.agent_type}_model.pt")
@@ -363,7 +380,8 @@ class CatanatronTrainer:
         # Setup
         obs_dim, action_dim = self.setup_environment()
         self.setup_agent(obs_dim, action_dim)
-          # Train based on agent type
+        
+        # Train based on agent type
         agent_type_lower = self.agent_type.lower()
         if agent_type_lower == "dqn":
             self.train_dqn(total_episodes)
@@ -384,6 +402,14 @@ class CatanatronTrainer:
         self.env.close()
         
         return final_results
+    
+    def save_model(self, path: str):
+        """Save the current model"""
+        if self.agent is not None:
+            self.agent.save(path)
+            logger.info(f"Model saved to {path}")
+        else:
+            logger.warning("No agent to save")
 
 def create_trainer_config(agent_type: str = "dqn") -> Dict[str, Any]:
     """Create training configuration"""

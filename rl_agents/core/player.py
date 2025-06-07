@@ -7,6 +7,7 @@ import torch
 from typing import List, Dict, Any, Optional
 import gymnasium as gym
 import logging
+import time
 
 from catanatron.models.player import Player, Color
 from catanatron.models.enums import Action, ActionType
@@ -32,12 +33,14 @@ class CatanatronRLPlayer(Player):
         self.training_mode = training_mode
         self.device = device
         
+        # Decision time tracking for performance evaluation
+        self.decision_times = []
+        
         # These will be set when environment is available
         self.agent = None
         self.obs_dim = None
         self.action_dim = None
-        
-        # For training
+          # For training
         self.last_observation = None
         self.last_action = None
         self.last_valid_actions = None
@@ -63,6 +66,9 @@ class CatanatronRLPlayer(Player):
         """Decide which action to take given the current game state"""
         if self.agent is None:
             raise ValueError("Agent not initialized. Call initialize_agent() first.")
+        
+        # Start timing for decision latency measurement
+        start_time = time.time()
         
         # Convert game state to observation
         observation = self._game_to_observation(game)
@@ -92,7 +98,21 @@ class CatanatronRLPlayer(Player):
         # Convert back to Action object
         selected_action = self._index_to_action(action_index, playable_actions)
         
+        # Record decision time in milliseconds (for comparison with 14.12ms Minimax benchmark)
+        decision_time_ms = (time.time() - start_time) * 1000
+        self.decision_times.append(decision_time_ms)
+        
         return selected_action
+    
+    def average_decision_time(self):
+        """Get average decision time in milliseconds"""
+        if not self.decision_times:
+            return 0.0
+        return sum(self.decision_times) / len(self.decision_times)
+    
+    def reset_decision_times(self):
+        """Reset decision time tracking"""
+        self.decision_times = []
     
     def _game_to_observation(self, game: Game) -> np.ndarray:
         """Convert game state to observation vector"""

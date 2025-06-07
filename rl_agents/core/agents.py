@@ -325,7 +325,7 @@ if __name__ == "__main__":
     
     # Example dimensions (will be determined from actual environment)
     obs_dim = 614  # From catanatron observation space
-    action_dim = 4000  # Approximate action space size
+    action_dim = 290  # Correct action space size from training
     
     print(f"Observation dimension: {obs_dim}")
     print(f"Action dimension: {action_dim}")

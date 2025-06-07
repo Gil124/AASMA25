@@ -8,9 +8,11 @@
     "memory_size": 100000,
     "target_update": 100,
     "hidden_size": 512,
-    "num_episodes": 10000,
-    "eval_interval": 100,
-    "save_interval": 500
+    "num_episodes": 5000,
+    "eval_interval": 250,
+    "save_interval": 500,
+    "training_phase": "basic",
+    "curriculum_learning": true
   },
   "ppo": {
     "learning_rate": 0.0003,
@@ -21,9 +23,11 @@
     "entropy_coef": 0.01,
     "max_grad_norm": 0.5,
     "hidden_size": 512,
-    "num_episodes": 10000,
-    "eval_interval": 100,
-    "save_interval": 500
+    "num_episodes": 5000,
+    "eval_interval": 250,
+    "save_interval": 500,
+    "training_phase": "basic",
+    "curriculum_learning": true
   },
   "training": {
     "device": "cpu",
@@ -34,6 +38,12 @@
     "output_dir": "training_outputs",
     "models_dir": "models",
     "logs_dir": "logs",
-    "tensorboard_dir": "tensorboard"
+    "tensorboard_dir": "tensorboard",
+    "two_player_mode": true,
+    "benchmark_target": {
+      "win_rate": 0.89,
+      "decision_time_ms": 14.12,
+      "agent_name": "AlphaBetaPlayer"
+    }
   }
 }

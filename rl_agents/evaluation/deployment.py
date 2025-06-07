@@ -71,9 +71,8 @@ class CatanatronEvaluator:
                 training_mode=False,
                 device=self.device
             )
-            
-            # Initialize with dummy dimensions (will be properly set during evaluation)
-            self.rl_player.initialize_agent(614, 4000)  # Approximate dimensions
+              # Initialize with correct dimensions from trained model
+            self.rl_player.initialize_agent(614, 290)  # Correct dimensions: 614 obs, 290 actions
             
             logger.info("RL agent loaded successfully")
             
@@ -97,12 +96,11 @@ class CatanatronEvaluator:
             opponents["AlphaBeta"] = AlphaBetaPlayer
         
         return opponents
-    
-    def evaluate_against_opponent(self, opponent_class, opponent_name: str, 
+      def evaluate_against_opponent(self, opponent_class, opponent_name: str, 
                                 num_games: int = 100, verbose: bool = True) -> Dict[str, Any]:
-        """Evaluate RL agent against a specific opponent"""
+        """Evaluate RL agent against a specific opponent in 2-player mode"""
         if verbose:
-            logger.info(f"Evaluating against {opponent_name} over {num_games} games...")
+            logger.info(f"Evaluating 2-player games against {opponent_name} over {num_games} games...")
         
         wins = 0
         total_rewards = []
@@ -113,24 +111,31 @@ class CatanatronEvaluator:
         for game_num in range(num_games):
             start_time = time.time()
             
-            # Create players
-            rl_player = create_rl_player(
-                color=Color.RED,
-                agent_type=self.agent_type,
-                model_path=self.model_path,
-                training_mode=False,
-                device=self.device
-            )
-            rl_player.initialize_agent(614, 4000)
+            # Create players for 2-player mode (alternate starting positions)
+            if game_num % 2 == 0:
+                rl_player = create_rl_player(
+                    color=Color.RED,
+                    agent_type=self.agent_type,
+                    model_path=self.model_path,
+                    training_mode=False,
+                    device=self.device
+                )
+                opponent = opponent_class(Color.BLUE)
+                players = [rl_player, opponent]
+                rl_color = Color.RED
+            else:
+                rl_player = create_rl_player(
+                    color=Color.BLUE,
+                    agent_type=self.agent_type,
+                    model_path=self.model_path,
+                    training_mode=False,
+                    device=self.device
+                )
+                opponent = opponent_class(Color.RED)
+                players = [opponent, rl_player]
+                rl_color = Color.BLUE
             
-            # Create opponent players
-            opponents = [
-                opponent_class(Color.BLUE),
-                opponent_class(Color.ORANGE),
-                opponent_class(Color.WHITE)
-            ]
-            
-            players = [rl_player] + opponents
+            rl_player.initialize_agent(614, 290)
             
             # Run game
             try:
@@ -143,9 +148,9 @@ class CatanatronEvaluator:
                 game_time = time.time() - start_time
                 
                 # Get victory points for RL player
-                rl_vp = game.state.player_state(f"p{Color.RED.value}")["public_victory_points"]
+                rl_vp = game.state.player_state(f"p{rl_color.value}")["public_victory_points"]
                 
-                if winner == Color.RED:
+                if winner == rl_color:
                     wins += 1
                     total_rewards.append(1.0)
                 else:
@@ -350,9 +355,8 @@ class CatanatronDeployment:
             model_path=self.model_path,
             training_mode=False
         )
-        
-        # Initialize with proper dimensions
-        player.initialize_agent(614, 4000)
+          # Initialize with correct dimensions
+        player.initialize_agent(614, 290)
         
         return player
     
@@ -420,7 +424,7 @@ class ExportedRLPlayer(Player):
             model_path="{self.model_path}",
             training_mode=False
         )
-        self.rl_player.initialize_agent(614, 4000)
+        self.rl_player.initialize_agent(614, 290)
     
     def decide(self, game, playable_actions):
         return self.rl_player.decide(game, playable_actions)
