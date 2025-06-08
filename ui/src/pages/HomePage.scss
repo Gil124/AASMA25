@@ -31,6 +31,18 @@
     button {
       margin-bottom: variables.$sm-gutter;
     }
+
+    .simulation-config-button {
+      background: linear-gradient(45deg, #9c27b0 30%, #673ab7 90%) !important;
+      color: white !important;
+      font-weight: 600 !important;
+      transition: all 0.3s ease !important;
+
+      &:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3) !important;
+      }
+    }
   }
 
   .player-count-selector {
@@ -48,7 +60,10 @@
         background-color: variables.$dark-gray !important;
 
         &:hover {
-          background-color: color.adjust(variables.$dark-gray, $lightness: -10%) !important;
+          background-color: color.adjust(
+            variables.$dark-gray,
+            $lightness: -10%
+          ) !important;
         }
 
         &.selected {

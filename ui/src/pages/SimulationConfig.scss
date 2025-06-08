@@ -1,0 +1,375 @@
+@use "sass:color";
+@use "../variables.scss";
+
+.simulation-config {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+  padding: 2rem;
+  color: white;
+
+  .config-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    position: relative;
+
+    .back-button {
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: white !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+
+      &:hover {
+        border-color: rgba(255, 255, 255, 0.6) !important;
+        background-color: rgba(255, 255, 255, 0.1) !important;
+      }
+    }
+
+    .title {
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: white;
+    }
+
+    .subtitle {
+      color: rgba(255, 255, 255, 0.8);
+    }
+  }
+
+  .config-content {
+    max-width: 1000px;
+    margin: 0 auto;
+
+    .players-section {
+      margin-bottom: 3rem;
+
+      .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+
+        h5 {
+          color: white;
+          margin: 0;
+        }
+      }
+
+      .players-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .player-card {
+        background: rgba(255, 255, 255, 0.1) !important;
+        backdrop-filter: blur(10px);
+        border-radius: 12px !important;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .MuiCardContent-root {
+          padding: 1.5rem !important;
+        }
+
+        .player-card-header {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          margin-bottom: 1rem;
+
+          .color-chip {
+            font-weight: 600;
+
+            &.color-red {
+              background-color: #f44336 !important;
+              color: white !important;
+            }
+            &.color-blue {
+              background-color: #2196f3 !important;
+              color: white !important;
+            }
+            &.color-orange {
+              background-color: #ff9800 !important;
+              color: white !important;
+            }
+            &.color-white {
+              background-color: #ffffff !important;
+              color: #333 !important;
+            }
+          }
+
+          h6 {
+            color: white;
+            margin: 0;
+            flex-grow: 1;
+          }
+
+          .remove-button {
+            color: rgba(255, 255, 255, 0.7) !important;
+
+            &:hover {
+              color: #f44336 !important;
+              background-color: rgba(244, 67, 54, 0.1) !important;
+            }
+          }
+        }
+
+        .player-controls {
+          .MuiFormControl-root {
+            .MuiInputLabel-root {
+              color: rgba(255, 255, 255, 0.7) !important;
+
+              &.Mui-focused {
+                color: #90caf9 !important;
+              }
+            }
+
+            .MuiOutlinedInput-root {
+              color: white !important;
+
+              .MuiOutlinedInput-notchedOutline {
+                border-color: rgba(255, 255, 255, 0.3) !important;
+              }
+
+              &:hover .MuiOutlinedInput-notchedOutline {
+                border-color: rgba(255, 255, 255, 0.5) !important;
+              }
+
+              &.Mui-focused .MuiOutlinedInput-notchedOutline {
+                border-color: #90caf9 !important;
+              }
+            }
+
+            .MuiSelect-icon {
+              color: rgba(255, 255, 255, 0.7) !important;
+            }
+          }
+        }
+
+        .player-description {
+          color: rgba(255, 255, 255, 0.7);
+          font-style: italic;
+          margin-top: 0.5rem;
+        }
+
+        // Parameter configuration styles
+        .player-params-accordion {
+          margin-top: 1rem;
+          background: rgba(255, 255, 255, 0.05) !important;
+          border-radius: 8px !important;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+
+          &::before {
+            display: none;
+          }
+
+          .params-header {
+            .MuiAccordionSummary-content {
+              display: flex;
+              align-items: center;
+              margin: 8px 0 !important;
+
+              .MuiTypography-root {
+                color: rgba(255, 255, 255, 0.9);
+                font-weight: 500;
+              }
+            }
+
+            .MuiAccordionSummary-expandIconWrapper {
+              color: rgba(255, 255, 255, 0.7);
+            }
+          }
+
+          .params-content {
+            padding-top: 0 !important;
+
+            .player-params {
+              display: grid;
+              grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+              gap: 1rem;
+
+              .param-input {
+                .MuiInputLabel-root {
+                  color: rgba(255, 255, 255, 0.7) !important;
+                  font-size: 0.875rem;
+
+                  &.Mui-focused {
+                    color: #90caf9 !important;
+                  }
+                }
+
+                .MuiOutlinedInput-root {
+                  color: white !important;
+                  font-size: 0.875rem;
+
+                  .MuiOutlinedInput-notchedOutline {
+                    border-color: rgba(255, 255, 255, 0.3) !important;
+                  }
+
+                  &:hover .MuiOutlinedInput-notchedOutline {
+                    border-color: rgba(255, 255, 255, 0.5) !important;
+                  }
+
+                  &.Mui-focused .MuiOutlinedInput-notchedOutline {
+                    border-color: #90caf9 !important;
+                  }
+                }
+              }
+
+              .param-switch {
+                .MuiFormControlLabel-label {
+                  color: rgba(255, 255, 255, 0.9);
+                  font-size: 0.875rem;
+                }
+
+                .MuiSwitch-root {
+                  .MuiSwitch-switchBase {
+                    &.Mui-checked {
+                      color: #90caf9 !important;
+
+                      & + .MuiSwitch-track {
+                        background-color: rgba(144, 202, 249, 0.5) !important;
+                      }
+                    }
+                  }
+
+                  .MuiSwitch-track {
+                    background-color: rgba(255, 255, 255, 0.3) !important;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .simulation-controls {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+
+      .controls-title {
+        color: white;
+        margin-bottom: 0.5rem;
+      }
+
+      .controls-description {
+        color: rgba(255, 255, 255, 0.7);
+        margin-bottom: 2rem;
+      }
+
+      .start-button {
+        background: linear-gradient(45deg, #4caf50 30%, #45a049 90%) !important;
+        color: white !important;
+        padding: 12px 48px !important;
+        font-size: 1.1rem !important;
+        font-weight: 600 !important;
+        border-radius: 8px !important;
+        box-shadow: 0 3px 15px rgba(76, 175, 80, 0.3) !important;
+        transition: all 0.3s ease !important;
+
+        &:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4) !important;
+        }
+
+        &:disabled {
+          background: rgba(255, 255, 255, 0.2) !important;
+          color: rgba(255, 255, 255, 0.5) !important;
+          transform: none !important;
+          box-shadow: none !important;
+        }
+      }
+    }
+
+    .loading-container {
+      text-align: center;
+      padding: 4rem 2rem;
+
+      h6 {
+        color: white;
+      }
+    }
+  }
+}
+
+// Color options in select dropdown
+.color-option {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  .color-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+
+    &.color-red {
+      background-color: #f44336;
+    }
+    &.color-blue {
+      background-color: #2196f3;
+    }
+    &.color-orange {
+      background-color: #ff9800;
+    }
+    &.color-white {
+      background-color: #ffffff;
+    }
+  }
+}
+
+// Menu styles for better appearance
+.MuiPaper-root.MuiMenu-paper {
+  background-color: rgba(30, 60, 114, 0.95) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+
+  .MuiMenuItem-root {
+    color: white !important;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    &.Mui-selected {
+      background-color: rgba(33, 150, 243, 0.3) !important;
+
+      &:hover {
+        background-color: rgba(33, 150, 243, 0.4) !important;
+      }
+    }
+  }
+}
+
+@media (max-width: 768px) {
+  .simulation-config {
+    padding: 1rem;
+
+    .config-header {
+      .back-button {
+        position: static;
+        margin-bottom: 1rem;
+      }
+    }
+
+    .config-content {
+      .players-section {
+        .players-list {
+          grid-template-columns: 1fr;
+        }
+      }
+    }
+  }
+}

@@ -92,6 +92,13 @@ export default function HomePage() {
             >
               Watch Catanatron
             </Button>
+            <Button
+              variant="contained"
+              className="simulation-config-button"
+              onClick={() => navigate("/simulation-config")}
+            >
+              Configure Custom Simulation
+            </Button>
           </>
         ) : (
           <GridLoader
