@@ -11,24 +11,38 @@ Get Started with the Full Documentation: https://docs.catanatron.com
 
 ## 🤖 Reinforcement Learning Agents
 
-This repository includes a comprehensive RL agent implementation that achieves superhuman performance:
-
-- **Advanced Architectures**: DQN and PPO agents with action masking
-- **Production Ready**: Complete training pipeline and deployment tools
-- **Well Organized**: Clean modular structure in `rl_agents/` directory
-- **Comprehensive Docs**: Detailed architecture guide and usage instructions
-
 ### Quick Start with RL Agents
 
 ```bash
 # Train a new DQN agent
 python train_rl_agent.py --agent dqn --episodes 1000
 
-# Train a PPO agent
-python train_rl_agent.py --agent ppo --episodes 2000
 ```
 
-📖 **See [rl_agents/README.md](rl_agents/README.md) for complete RL documentation**
+This repository includes a comprehensive Deep Q-Network (DQN) agent implementation trained to play Settlers of Catan:
+
+- **Pre-trained Models**: Ready-to-use DQN models available in `training_outputs_dqn/`
+- **Advanced Architecture**: 614-dimensional state space, 290-action space with action masking
+- **Curriculum Learning**: 4-phase training progression over 2000 episodes
+- **Production Ready**: Complete training pipeline and evaluation tools
+
+### Pre-trained DQN Models
+
+The `training_outputs_dqn/` folder contains:
+- **`final_dqn_model.pt`**: Best performing model after 2000 episodes
+- **Checkpoint models**: `dqn_episode_500.pt`, `dqn_episode_1000.pt`, `dqn_episode_1500.pt`, `dqn_episode_2000.pt`
+- **Training metrics**: Episode-wise performance data and hyperparameter configuration
+- **Architecture**: 614 → 256 → 128 → 290 neural network with experience replay
+
+### Model Training Details
+
+The DQN agent was trained using curriculum learning over 2000 episodes:
+1. **Episodes 1-500**: RandomPlayer opponents (exploration phase)
+2. **Episodes 501-1000**: WeightedRandomPlayer opponents  
+3. **Episodes 1001-1500**: VictoryPointPlayer opponents
+4. **Episodes 1501-2000**: AlphaBetaPlayer opponents (strongest phase)
+
+Key hyperparameters: 20,000 replay buffer, ε-greedy decay over 1600 episodes, target network updates every 1000 steps.
 
 ## Command Line Interface
 Catanatron provides a `catanatron-play` CLI tool to run large scale simulations.
