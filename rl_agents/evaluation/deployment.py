@@ -87,16 +87,15 @@ class CatanatronEvaluator:
             "WeightedRandom": WeightedRandomPlayer,
             "Greedy": GreedyPlayoutsPlayer,
         }
-        
-        # Add advanced players if available
+          # Add advanced players if available
         if ValueFunctionPlayer is not None:
             opponents["ValueFunction"] = ValueFunctionPlayer
-        
         if AlphaBetaPlayer is not None:
             opponents["AlphaBeta"] = AlphaBetaPlayer
         
         return opponents
-      def evaluate_against_opponent(self, opponent_class, opponent_name: str, 
+    
+    def evaluate_against_opponent(self, opponent_class, opponent_name: str, 
                                 num_games: int = 100, verbose: bool = True) -> Dict[str, Any]:
         """Evaluate RL agent against a specific opponent in 2-player mode"""
         if verbose:

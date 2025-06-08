@@ -45,7 +45,7 @@ class CatanatronRLAgent(ABC):
 class DQNNetwork(nn.Module):
     """Deep Q-Network for Catanatron"""
     
-    def __init__(self, obs_dim: int, action_dim: int, hidden_dims: List[int] = [512, 256, 128]):
+    def __init__(self, obs_dim: int, action_dim: int, hidden_dims: List[int] = [256, 128]):
         super(DQNNetwork, self).__init__()
         
         layers = []
@@ -154,18 +154,50 @@ class MaskedDQNAgent(CatanatronRLAgent):
             'target_q_network_state_dict': self.target_q_network.state_dict(),
             'optimizer_state_dict': self.optimizer.state_dict(),
             'update_counter': self.update_counter,
-            'epsilon': self.epsilon
-        }, path)
+            'epsilon': self.epsilon        }, path)
         logger.info(f"Agent saved to {path}")
     
+    def _convert_state_dict_keys(self, state_dict: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+        """Convert state dict keys from 'layers.*' to 'network.*' format"""
+        converted_dict = {}
+        for key, value in state_dict.items():
+            if key.startswith('layers.'):
+                # Convert 'layers.X.weight' to 'network.X.weight'
+                new_key = key.replace('layers.', 'network.')
+                converted_dict[new_key] = value
+                logger.debug(f"Converted key: {key} -> {new_key}")
+            else:
+                converted_dict[key] = value
+        return converted_dict
+
     def load(self, path: str):
-        """Load agent state"""
+        """Load agent state with compatibility for different model formats"""
         checkpoint = torch.load(path, map_location=self.device)
-        self.q_network.load_state_dict(checkpoint['q_network_state_dict'])
-        self.target_q_network.load_state_dict(checkpoint['target_q_network_state_dict'])
-        self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
-        self.update_counter = checkpoint['update_counter']
-        self.epsilon = checkpoint['epsilon']
+        
+        # Handle different checkpoint formats
+        if 'q_network_state_dict' in checkpoint:
+            # Standard RL agents format
+            q_state_dict = checkpoint['q_network_state_dict']
+            target_state_dict = checkpoint['target_q_network_state_dict']
+            
+            # Check if we need to convert keys from 'layers.*' to 'network.*'
+            if any(key.startswith('layers.') for key in q_state_dict.keys()):
+                logger.info("Converting state dict keys from 'layers.*' to 'network.*' format")
+                q_state_dict = self._convert_state_dict_keys(q_state_dict)
+                target_state_dict = self._convert_state_dict_keys(target_state_dict)
+            
+            self.q_network.load_state_dict(q_state_dict)
+            self.target_q_network.load_state_dict(target_state_dict)
+            self.optimizer.load_state_dict(checkpoint['optimizer_state_dict'])
+            self.update_counter = checkpoint.get('update_counter', 0)
+            self.epsilon = checkpoint.get('epsilon', self.epsilon)
+            
+        else:
+            # Handle other formats (e.g., just the model state dict)
+            logger.warning("Unknown checkpoint format, attempting direct load")
+            self.q_network.load_state_dict(checkpoint)
+            self.target_q_network.load_state_dict(checkpoint)
+        
         logger.info(f"Agent loaded from {path}")
 
 class PPONetwork(nn.Module):
