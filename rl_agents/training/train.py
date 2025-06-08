@@ -29,8 +29,8 @@ import catanatron.gym
 # Import our custom components
 from ..core.agents import MaskedDQNAgent, MaskedPPOAgent
 from .utilities import TrainingLogger, CatanatronRewardShaper
-from step5_rl_player import CatanatronRLPlayer
-from step6_training_pipeline import CatanatronTrainer
+from rl_agents.core.player import CatanatronRLPlayer
+from rl_agents.training.pipeline import CatanatronTrainer
 
 
 def setup_logging(log_dir: str) -> logging.Logger:

@@ -71,7 +71,7 @@ class CatanatronTrainer:
         from catanatron.players.playouts import GreedyPlayoutsPlayer
         
         # Curriculum learning: start with easier opponents, progress to harder ones
-        training_phase = self.config.get("training_phase", "basic")
+        training_phase = self.config.get("training_phase", "aplabeta")
         
         if training_phase == "basic":
             # Phase 1: Train against random and weighted random
